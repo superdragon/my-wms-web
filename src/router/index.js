@@ -57,11 +57,11 @@ export const asyncRoutes = [
     name: 'goodsUnitMgr',
     component: () => import('@/views/goodsUnit/index'),
   },
-  // {
-  //   path: '/myCenter',
-  //   name: 'myCenter',
-  //   component: () => import('@/views/me/MyCenter'),
-  // },
+  {
+    path: '/store',
+    name: 'storeMgr',
+    component: () => import('@/views/store/index'),
+  },
   // {
   //   path: '/accountList',
   //   name: 'accountList',

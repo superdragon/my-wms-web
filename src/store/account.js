@@ -48,6 +48,7 @@ const mutations = {
     state.loginName = ''
     state.menus = []
     state.btns = []
+    state.btnMap = {}
     localStorage.removeItem('wms-token')
     resetRouter()
   }
