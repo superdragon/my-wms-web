@@ -186,6 +186,7 @@ export default {
           urls.push(item.url)
         }
       })
+      this.fileList = fileList
       this.uploadImages = urls
     },
 
@@ -198,6 +199,7 @@ export default {
           urls.push(item.url)
         }
       })
+      this.fileList = fileList
       this.uploadImages = urls
     },
   }

@@ -62,6 +62,31 @@ export const asyncRoutes = [
     name: 'storeMgr',
     component: () => import('@/views/store/index'),
   },
+  {
+    path: '/emp',
+    name: 'empMgr',
+    component: () => import('@/views/employee/index'),
+  },
+  {
+    path: '/goodsIn',
+    name: 'goodsIn',
+    component: () => import('@/views/goodsIn/index'),
+  },
+  {
+    path: '/goodsOut',
+    name: 'goodsOut',
+    component: () => import('@/views/goodsOut/index'),
+  },
+  {
+    path: '/transfer',
+    name: 'stockTransfer',
+    component: () => import('@/views/stockTransfer/index'),
+  },
+  {
+    path: '/check',
+    name: 'stockCheck',
+    component: () => import('@/views/stockCheck/index'),
+  },
   // {
   //   path: '/accountList',
   //   name: 'accountList',

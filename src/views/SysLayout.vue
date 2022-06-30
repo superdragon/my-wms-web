@@ -30,6 +30,7 @@
         <el-menu
             ref="myNav"
             background-color="#4e4c4c"
+            :unique-opened="true"
             text-color="#fff"
             active-text-color="#efdb07"
             :style="'height:'+ menuHeight"
