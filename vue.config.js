@@ -5,6 +5,7 @@ module.exports = {
 
   // 开发环境，配置代理服务器
   devServer: {
+    port: 8200,
     proxy: 'http://localhost:9001'
   }
 }
