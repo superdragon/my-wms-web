@@ -9,14 +9,14 @@
       <div class="text item"><span class="el-icon-goods">商品种类:</span><span class="stat">{{ item.goodsStat }}</span></div>
       <div class="text item"><span class="el-icon-sell">累计入库总量:</span><span class="stat">{{ item.inStockStat }}</span><span>件</span></div>
       <div class="text item"><span class="el-icon-sold-out">累计出库总量:</span><span class="stat">{{ item.outStockStat }}</span><span>件</span></div>
-      <div class="text item"><span class="el-icon-box">当前库存总量:</span><span class="stat">{{ item.outStockStat }}</span><span>件</span></div>
+      <div class="text item"><span class="el-icon-box">当前库存总量:</span><span class="stat">{{ item.stockStat }}</span><span>件</span></div>
       <div class="text item"><span class="el-icon-position">待库存总量:</span><span class="stat">{{ item.outtingStockStat }}</span><span>件</span></div>
       <div class="text item"><span class="el-icon-money">库存总额:</span><span class="stat">{{ item.amount }}</span><span>元</span></div>
       <div class="bottom clearfix">
         <el-button type="text" class="button">盘点统计</el-button>
-        <el-button type="text" class="button">入库记录</el-button>
+        <el-button type="text" class="button" @click="toInStorePage(item)">入库记录</el-button>
         <el-button type="text" class="button">出库记录</el-button>
-        <el-button type="text" class="button">调拨记录</el-button>
+        <el-button type="text" class="button" @click="toTransferPage(item)">调拨记录</el-button>
       </div>
     </el-card>
   </div>
@@ -47,6 +47,24 @@ export default {
       const { data } = await stockStat()
       this.isLoading = false
       this.statData = data
+    },
+
+    toInStorePage(item) {
+      this.$router.push({
+        path: '/goodsIn',
+        query: {
+          storeId: item.storeId,
+        }
+      })
+    },
+
+    toTransferPage(item) {
+      this.$router.push({
+        path: '/transfer',
+        query: {
+          storeId: item.storeId,
+        }
+      })
     },
   }
 }

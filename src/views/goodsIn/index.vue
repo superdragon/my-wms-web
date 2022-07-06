@@ -89,6 +89,11 @@ export default {
     }
   },
   created() {
+    // 获取地址携带的参数
+    const storeId = this.$route.query.storeId
+    if (storeId) {
+      this.filterFrom.storeId = storeId - 0
+    }
     this.initStore()
     // 初始化数据
     this.fetchData()

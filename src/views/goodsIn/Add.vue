@@ -72,7 +72,6 @@ export default {
   },
   methods: {
     show(flag) {
-      this.form.name = ''
       this.dialogVisible = flag
     },
 

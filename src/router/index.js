@@ -9,7 +9,7 @@ const myRoutes = [
   {
     path: '/',
     name: 'index',
-    redirect: '/layout',
+    redirect: '/home',
   },
   {
     path: '/login',

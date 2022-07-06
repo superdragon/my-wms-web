@@ -8,3 +8,12 @@ export function stockStat() {
   })
 }
 
+export function getGoodsNumByStoreId(data) {
+  return request({
+    url: '/goodsStat/getGoodsNumByStoreId',
+    method: 'post',
+    requestMethod: 'form',
+    data,
+  })
+}
+
