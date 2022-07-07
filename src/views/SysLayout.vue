@@ -48,7 +48,7 @@
           </el-submenu>
         </el-menu>
       </el-aside>
-      <el-main>
+      <el-main :style="{height: divHeight + 'px',overflow: 'auto'}">
         <router-view></router-view>
       </el-main>
     </el-container>
@@ -76,6 +76,9 @@ export default {
     menuHeight() {
       return this.$contentHeight() + 'px'
     },
+    divHeight() {
+      return this.$baseTableHeight(0) + 60
+    }
   },
   methods: {
     async fetchData() {

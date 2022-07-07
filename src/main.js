@@ -5,6 +5,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import router from '@/router'
 import store from "@/store";
 import { checkPermission } from "@/utils/check";
+import echarts from '@/components/echarts'
 
 Vue.config.productionTip = false
 
@@ -15,6 +16,9 @@ new Vue({
   store,
   render: h => h(App),
 }).$mount('#app')
+
+// 图标插件
+Vue.prototype.$echarts = echarts
 
 // 列表高度
 Vue.prototype.$baseTableHeight = (toolHeight) => {
