@@ -87,111 +87,11 @@ export const asyncRoutes = [
     name: 'stockCheck',
     component: () => import('@/views/stockCheck/index'),
   },
-  // {
-  //   path: '/accountList',
-  //   name: 'accountList',
-  //   component: () => import('@/views/account/index'),
-  // },
-  // {
-  //   path: '/accountAdd',
-  //   name: 'accountAdd',
-  //   component: () => import('@/views/account/add'),
-  // },
-  // {
-  //   path: '/accountEdit',
-  //   name: 'accountEdit',
-  //   component: () => import('@/views/account/edit'),
-  // },
-  // {
-  //   path: '/goodsInfo',
-  //   name: 'goodsInfo',
-  //   component: () => import('@/views/goods/GoodsInfo'),
-  // },
-  // {
-  //   path: '/goodsAdd',
-  //   name: 'goodsAdd',
-  //   component: () => import('@/views/goods/GoodsAdd'),
-  // },
-  // {
-  //   path: '/goodsEdit',
-  //   name: 'goodsEdit',
-  //   component: () => import('@/views/goods/GoodsEdit'),
-  // },
-  // {
-  //   path: '/storeList',
-  //   name: 'storeList',
-  //   component: () => import('@/views/mystore/StoreList'),
-  // },
-  // {
-  //   path: '/empList',
-  //   name: 'empList',
-  //   component: () => import('@/views/employee/EmpList'),
-  // },
-  // {
-  //   path: '/safeStoreList',
-  //   name: 'safeStoreList',
-  //   component: () => import('@/views/mystore/SafeStoreList'),
-  // },
-  // {
-  //   path: '/goodsInList',
-  //   name: 'GoodsInList',
-  //   component: () => import('@/views/goodsIn/GoodsInList'),
-  // },
-  // {
-  //   path: '/addStoreList',
-  //   name: 'AddStoreList',
-  //   component: () => import('@/views/goodsIn/AddStoreList'),
-  // },
-  // {
-  //   path: '/storeListInfo',
-  //   name: 'StoreListInfo',
-  //   component: () => import('@/views/goodsIn/StoreListInfo'),
-  // },
-  // {
-  //   path: '/storeStatList',
-  //   name: 'StoreStatList',
-  //   component: () => import('@/views/storeStat/StoreStatList'),
-  // },
-  // {
-  //   path: '/goodsAllocateList',
-  //   name: 'GoodsAllocateList',
-  //   component: () => import('@/views/goodsAllocate/GoodsAllocateList'),
-  // },
-  // {
-  //   path: '/addGoodsAllocateList',
-  //   name: 'AddGoodsAllocateList',
-  //   component: () => import('@/views/goodsAllocate/AddGoodsAllocateList'),
-  // },
-  // {
-  //   path: '/tradeList',
-  //   name: 'TradeList',
-  //   component: () => import('@/views/trade/TradeList'),
-  // },
-  // {
-  //   path: '/addTrade',
-  //   name: 'AddTrade',
-  //   component: () => import('@/views/trade/AddTrade'),
-  // },
-  // {
-  //   path: '/goodsOutList',
-  //   name: 'GoodsOutList',
-  //   component: () => import('@/views/goodsOut/GoodsOutList'),
-  // },
-  // {
-  //   path: '/handleGoodsOut',
-  //   name: 'HandleGoodsOut',
-  //   component: () => import('@/views/goodsOut/HandleGoodsOut'),
-  // },
-  // {
-  //   path: '/permissionList',
-  //   name: 'PermissionList',
-  //   component: () => import('@/views/permission/PermissionList'),
-  // },
-  // {
-  //   path: '/rolesList',
-  //   name: 'RolesList',
-  //   component: () => import('@/views/permission/RolesList'),
-  // },
+  {
+    path: '/trade',
+    name: 'tradeMgr',
+    component: () => import('@/views/trade/index'),
+  },
 ]
 
 const myRouter = new VueRouter({

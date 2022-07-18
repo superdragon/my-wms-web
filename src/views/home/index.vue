@@ -19,21 +19,21 @@
         <span style="font-weight: bold;">今日交易额</span>
         <el-button type="text" class="button" style="float: right; padding: 3px 0;">订单记录</el-button>
       </div>
-      <div class="text item"><span class="stat" style="color: #67c23a;">10000</span></div>
+      <div class="text item"><span class="stat" style="color: #67c23a;">{{ tradeAmount }}</span></div>
     </el-card>
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span style="font-weight: bold;">今日交易量</span>
         <el-button type="text" class="button" style="float: right; padding: 3px 0;">订单记录</el-button>
       </div>
-      <div class="text item"><span class="stat" style="color: #e46633;">10000</span></div>
+      <div class="text item"><span class="stat" style="color: #e46633;">{{ tradeTotal }}</span></div>
     </el-card>
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span style="font-weight: bold;">今日下单用户</span>
         <el-button type="text" class="button" style="float: right; padding: 3px 0;">订单记录</el-button>
       </div>
-      <div class="text item"><span class="stat" style="color: #e91e49;">10000</span></div>
+      <div class="text item"><span class="stat" style="color: #e91e49;">{{ userTotal }}</span></div>
     </el-card>
 
     <el-card class="big-card">
@@ -52,7 +52,8 @@
 </template>
 
 <script>
-import { todayStatTotal } from '@/api/todayStat'
+import {todayStatTotal, todayLatestNotify, latestStatTrade, latestStatStoreTrade, latestGoodsTop} from '@/api/todayStat'
+
 export default {
   name: "index",
   data() {
@@ -60,6 +61,9 @@ export default {
       isLoading: false,
       transferTotal: 0,
       inStoreTotal: 0,
+      tradeAmount: 0,
+      tradeTotal: 0,
+      userTotal: 0,
     }
   },
   created() {
@@ -81,26 +85,47 @@ export default {
       const { data } = await todayStatTotal()
       this.transferTotal = data.transferTotal
       this.inStoreTotal = data.inStoreTotal
+      if (data.tradeAmount) {
+        this.tradeAmount = data.tradeAmount
+      }
+      if (data.tradeTotal) {
+        this.tradeTotal = data.tradeTotal
+      }
+      this.userTotal = data.userTotal
+    },
+
+    async runNotify() {
+      const { data } = await todayLatestNotify()
+      if (data && data.id) {
+        let msg = '订单编号: ' + data.id
+        this.$notify({
+          title: '来新订单了',
+          message: msg,
+          duration: 0
+        });
+      }
     },
 
     refreshToday() {
       setInterval(() => {
         this.runStat()
+        this.runNotify()
       }, 10000)
     },
 
-    historyOrder() {
+    async historyOrder() {
+      const { data } = await latestStatTrade()
       let dates = []
       let saleAmount = []
       let saleTotal = []
-      for(let i = 1; i <= 30; i++) {
-        if (i < 10) {
-          dates.push('2022060' + i)
-        } else {
-          dates.push('202206' + i)
-        }
-        saleAmount.push(Math.floor(Math.random()*5000 + 1000))
-        saleTotal.push(Math.floor(Math.random()*100 + 1000))
+      if (data.statDates) {
+        dates = [...data.statDates]
+      }
+      if (data.saleAmount) {
+        saleAmount = [...data.saleAmount]
+      }
+      if (data.saleTotal) {
+        saleTotal = [...data.saleTotal]
       }
       let myEcharts = this.$echarts.init(document.getElementById('historyOrder'))
       let option = {
@@ -181,11 +206,25 @@ export default {
       myEcharts.setOption(option)
     },
 
-    historyStore() {
+    async historyStore() {
+      const {data} = await latestStatStoreTrade()
+      let storeData = []
+      let total = 0
+      if (data && data.items) {
+        data.items.forEach(item => {
+          storeData.push({
+            value: item.sale_amount,
+            name: item.store_name,
+          })
+
+          total += (item.sale_amount - 0)
+        })
+      }
+
       let myEcharts = this.$echarts.init(document.getElementById('historyStore'))
       let option = {
         title: {
-          text: '1000000',
+          text: total,
           subtext: '近30交易总额',
           left: 'center'
         },
@@ -209,13 +248,7 @@ export default {
             name: '销售额',
             type: 'pie',
             radius: '50%',
-            data: [
-              { value: 1048, name: '郑州仓' },
-              { value: 735, name: '邯郸仓' },
-              { value: 580, name: '石家庄仓' },
-              { value: 484, name: '北京仓' },
-              { value: 300, name: '沧州仓' }
-            ],
+            data: storeData,
             emphasis: {
               itemStyle: {
                 shadowBlur: 10,
@@ -230,7 +263,23 @@ export default {
       myEcharts.setOption(option)
     },
 
-    historyGoods() {
+    async historyGoods() {
+      const { data } = await latestGoodsTop()
+      let yAxisData = []
+      let seriesData = []
+      if (data) {
+        data.forEach(item => {
+          seriesData.unshift({
+            value: item.saleAmount,
+            name: item.name + ' ' + item.saleAmount,
+            label: {
+              show: true,
+              offset: [150, 0]
+            }
+          })
+        })
+      }
+
       let myEcharts = this.$echarts.init(document.getElementById('historyGoods'))
       let option = {
         title: {
@@ -254,13 +303,17 @@ export default {
         },
         yAxis: {
           type: 'category',
-          data: ['Brazil', 'Indonesia', 'USA', 'India', 'China', 'World']
+          data: yAxisData,
+          show: false,
         },
         series: [
           {
             name: '2011',
             type: 'bar',
-            data: [18203, 23489, 29034, 104970, 131744, 630230]
+            label: {
+              formatter: '{b}'
+            },
+            data: seriesData
           },
         ]
       }

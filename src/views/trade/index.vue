@@ -1,6 +1,10 @@
 <template>
   <div v-loading="isLoading">
     <el-row :gutter="20">
+      <el-col :span="6">
+        <el-button type="primary" v-if="checkPermission('trade_add')" icon="el-icon-plus" size="small" @click="handleAdd">下单</el-button>
+      </el-col>
+
       <el-col :span="18">
         <el-input placeholder="订货单号" v-model="filterFrom.id" clearable size="small"
                   style="width: 300px;margin-right: 10px;"></el-input>
@@ -12,7 +16,7 @@
         stripe
         :data="tableData"
         :height="tableHeight">
-      <el-table-column prop="id" label="订货单号" width="230" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="id" label="订货单号" width="180" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="totalPrice" label="订单金额" width="120"></el-table-column>
       <el-table-column prop="payType" label="支付方式" width="100">
         <template slot-scope="scope">
@@ -31,10 +35,22 @@
         </template>
       </el-table-column>
       <el-table-column prop="payTime" label="支付时间" width="180"></el-table-column>
+      <el-table-column prop="shipTime" label="发货时间" width="180"></el-table-column>
       <el-table-column prop="createTime" label="下单时间" width="180"></el-table-column>
       <el-table-column label="操作" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" plain type="primary" icon="el-icon-truck" @click="handleStatus(scope.row)">接单</el-button>
+          <el-button v-if="scope.row.status === 1 && checkPermission('pre_shipped')" size="mini" plain icon="el-icon-chat-line-square" type="warning"
+                     @click="handleStatus(scope.row, 2)">派单
+          </el-button>
+          <el-button v-if="scope.row.status === 3" size="mini" plain icon="el-icon-coordinate" type="success"
+                     @click="handleStatus(scope.row, 4)">模拟收货
+          </el-button>
+          <el-button v-if="scope.row.status === 0  && checkPermission('check_pay')" size="mini" plain icon="el-icon-full-screen"
+                     type="danger" @click="handleStatus(scope.row, 1)">模拟支付成功
+          </el-button>
+          <el-button size="mini" plain icon="el-icon-info"
+                     type="primary" @click="handleInfo(scope.row)">详情
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -51,18 +67,25 @@
         :total="totalNum">
     </el-pagination>
 
-    <shipped ref="shipped" @fetch-data="fetchData"></shipped>
+    <TradeAdd ref="tradeAdd" @fetch-data="fetchData"></TradeAdd>
+    <TradeInfo ref="tradeInfo"></TradeInfo>
+    <TradePay ref="tradePay" @fetch-data="fetchData"></TradePay>
+
   </div>
 </template>
 
 <script>
-import { pageTrade } from "@/api/trade";
-import shipped from "@/views/goodsOut/shipped";
+import {pageTrade, updateTradeStatus} from "@/api/trade";
+import TradeAdd from '@/views/trade/Add'
+import TradeInfo from '@/views/trade/Info'
+import TradePay from '@/views/trade/Pay'
 
 export default {
   name: "TradeMgr",
   components: {
-    shipped,
+    TradeAdd,
+    TradeInfo,
+    TradePay,
   },
   data() {
     return {
@@ -96,7 +119,6 @@ export default {
       let reqData = {
         pageSize: this.pageSize,
         pageNum: this.pageNum,
-        status:  2,
       }
       // 如果模糊查询关键字有值
       if (this.filterFrom.id) {
@@ -121,12 +143,47 @@ export default {
       this.fetchData()
     },
 
+    handleAdd() {
+      this.$refs['tradeAdd'].show(true)
+    },
+
     handleQuery() {
       this.fetchData()
     },
 
-    handleStatus(row) {
-      this.$refs['shipped'].show(true, row)
+    handleStatus(row, status) {
+      if (status === 1) {
+        this.$refs['tradePay'].show(true, row, status)
+      } else if (status === 2 || status === 4) {
+        let msg = ''
+        if (status === 2) {
+          msg = '确定要派单吗？'
+        } else if (status === 4) {
+          msg = '确定要模拟收货吗？'
+        }
+        this.$confirm(msg, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
+
+          await updateTradeStatus({
+            id: row.id,
+            status: status,
+          })
+
+          this.$message({
+            type: 'success',
+            message: '派单成功!'
+          });
+
+          this.fetchData()
+        }).catch(() => {});
+      }
+    },
+
+    handleInfo(row) {
+      this.$refs['tradeInfo'].show(true, row)
     },
   }
 }
